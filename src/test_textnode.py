@@ -18,6 +18,12 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("This is a text node with an url", "bold", "https://bood.dev")
         self.assertEqual(node, node2)
 
+    def test_repr(self):
+        node = TextNode("This is a text node", "bold", "https://www.boot.dev")
+        self.assertEqual(
+            "TextNode(This is a text node, bold, https://www.boot.dev)", repr(node)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
