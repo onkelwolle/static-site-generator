@@ -2,6 +2,7 @@ import unittest
 
 from htmlnode import HTMLNode
 
+
 class TestHTMLNode(unittest.TestCase):
 
     def test_to_html_props(self):
@@ -27,6 +28,7 @@ class TestHTMLNode(unittest.TestCase):
             node.__repr__(),
             "HTMLNode(div, Hello, world!, children: None, {'class': 'greeting', 'href': 'https://boot.dev'})",
         )
+
 
 if __name__ == "__main__":
     unittest.main()
