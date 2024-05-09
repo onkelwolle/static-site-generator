@@ -2,7 +2,9 @@ import unittest
 
 from inline_markdown import (split_nodes_delimiter,
                              extract_markdown_images,
-                             extract_markdown_links)
+                             extract_markdown_links,
+                             split_nodes_image,
+                             split_nodes_link)
 from textnode import (TextNode,
                       text_type_text,
                       text_type_bold,
@@ -81,6 +83,49 @@ class TestInlineMarkdown(unittest.TestCase):
                 ("another", "https://www.example.com/another")
             ],
             extract_markdown_links(text))
+
+    def test_split_nodes_two_image(self):
+        node = TextNode(
+            "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png) and some more text",
+            text_type_text,
+        )
+
+        self.assertEqual([
+            TextNode("This is text with an ", "text", None),
+            TextNode(
+                "image", "image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+            TextNode(" and another ", "text", None),
+            TextNode("second image", "image",
+                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"),
+            TextNode(" and some more text", "text", None)
+        ],
+            split_nodes_image([node]))
+
+    def test_split_nodes_only_image(self):
+        node = TextNode(
+            "![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png)",
+            text_type_text,
+        )
+
+        self.assertEqual([
+            TextNode(
+                "image", "image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png")
+        ],
+            split_nodes_image([node]))
+
+    def test_split_nodes_two_links(self):
+        node = TextNode(
+            "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)",
+            text_type_text,
+        )
+
+        self.assertEqual([
+            TextNode("This is text with a ", "text", None),
+            TextNode("link", "link", "https://www.example.com"),
+            TextNode(" and ", "text", None),
+            TextNode("another", "link", "https://www.example.com/another")
+        ],
+            split_nodes_link([node]))
 
 
 if __name__ == "__main__":
