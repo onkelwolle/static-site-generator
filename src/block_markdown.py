@@ -84,3 +84,13 @@ def block_type_code_to_html(block):
     leafnodes = [LeafNode(None, block.lstrip("```").rstrip("```"))]
     parentnode = ParentNode("code", leafnodes)
     return parentnode
+
+
+def block_type_quote_to_html(block):
+    lines = block.split("\n")
+    stripped_lines = []
+    for line in lines:
+        stripped_lines.append(line.lstrip(">").lstrip())
+    parentnode = ParentNode("blockquote",
+                            [LeafNode(None, "\n".join(stripped_lines))])
+    return parentnode
