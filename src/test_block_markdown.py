@@ -11,7 +11,8 @@ from block_markdown import (markdown_to_blocks,
                             block_type_paragraph_to_html,
                             block_type_heading_to_html,
                             block_type_code_to_html,
-                            block_type_quote_to_html)
+                            block_type_quote_to_html,
+                            block_type_unordered_list_to_html)
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -88,6 +89,14 @@ This is the same paragraph on a new line
         block = "> quote\n> more quote"
         self.assertEqual("<blockquote>quote\nmore quote</blockquote>",
                          block_type_quote_to_html(block).to_html())
+
+    def test_block_type_unordered_list_to_html(self):
+        block = "* list\n* items"
+        self.assertEqual("<ul><li>list</li><li>items</li></ul>",
+                         block_type_unordered_list_to_html(block).to_html())
+        block = "- list\n- items"
+        self.assertEqual("<ul><li>list</li><li>items</li></ul>",
+                         block_type_unordered_list_to_html(block).to_html())
 
 
 if __name__ == "__main__":

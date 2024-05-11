@@ -94,3 +94,12 @@ def block_type_quote_to_html(block):
     parentnode = ParentNode("blockquote",
                             [LeafNode(None, "\n".join(stripped_lines))])
     return parentnode
+
+
+def block_type_unordered_list_to_html(block):
+    lines = block.split("\n")
+    leafnodes = []
+    for line in lines:
+        leafnodes.append(LeafNode("li", line.lstrip("*").lstrip("-").lstrip()))
+    parentnode = ParentNode("ul", leafnodes)
+    return parentnode
