@@ -60,3 +60,21 @@ def block_to_block_type(block):
 def block_type_paragraph_to_html(block):
     parentnode = ParentNode("p", [LeafNode(None, block)])
     return parentnode
+
+
+def block_type_heading_to_html(block):
+    leafnodes = [LeafNode(None, block.lstrip("#").lstrip())]
+
+    if block.startswith("# "):
+        parentnode = ParentNode("h1", leafnodes)
+    if block.startswith("## "):
+        parentnode = ParentNode("h2", leafnodes)
+    if block.startswith("### "):
+        parentnode = ParentNode("h3", leafnodes)
+    if block.startswith("#### "):
+        parentnode = ParentNode("h4", leafnodes)
+    if block.startswith("##### "):
+        parentnode = ParentNode("h5", leafnodes)
+    if block.startswith("###### "):
+        parentnode = ParentNode("h6", leafnodes)
+    return parentnode
