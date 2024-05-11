@@ -24,17 +24,17 @@ class TextNode:
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
 
 
-def text_node_to_html_node(self, text_node):
-    if self.text_type is text_type_text:
+def text_node_to_html_node(text_node):
+    if text_node.text_type is text_type_text:
         return LeafNode(None, text_node.text)
-    elif self.text_type is text_type_bold:
+    elif text_node.text_type is text_type_bold:
         return LeafNode("b", text_node.text)
-    elif self.text_type is text_type_italic:
+    elif text_node.text_type is text_type_italic:
         return LeafNode("i", text_node.text)
-    elif self.text_type is text_type_code:
+    elif text_node.text_type is text_type_code:
         return LeafNode("code", text_node.text)
-    elif self.text_type is text_type_link:
+    elif text_node.text_type is text_type_link:
         return LeafNode("a", text_node.text, {"href": text_node.url})
-    elif self.text_type is text_type_image:
+    elif text_node.text_type is text_type_image:
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     raise ValueError(f"Invalid text type: {text_node.text_type}")

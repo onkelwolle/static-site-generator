@@ -1,6 +1,9 @@
 from parentnode import ParentNode
 from leafnode import LeafNode
 
+from inline_markdown import text_to_textnodes
+from textnode import text_node_to_html_node
+
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
@@ -57,60 +60,79 @@ def block_to_block_type(block):
     return block_type_paragraph
 
 
-def block_type_paragraph_to_html(block):
-    parentnode = ParentNode("p", [LeafNode(None, block)])
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+    children = []
+    for text_node in text_nodes:
+        html_node = text_node_to_html_node(text_node)
+        children.append(html_node)
+    return children
+
+
+def block_type_paragraph_to_html_node(block):
+    lines = block.split("\n")
+    paragraph = " ".join(lines)
+    children = text_to_children(paragraph)
+    parentnode = ParentNode("p", children)
     return parentnode
 
 
-def block_type_heading_to_html(block):
-    leafnodes = [LeafNode(None, block.lstrip("#").lstrip())]
+def block_type_heading_to_html_node(block):
+    stripped_block = block.lstrip("#").lstrip()
+    children = text_to_children(stripped_block)
 
     if block.startswith("# "):
-        parentnode = ParentNode("h1", leafnodes)
-    if block.startswith("## "):
-        parentnode = ParentNode("h2", leafnodes)
-    if block.startswith("### "):
-        parentnode = ParentNode("h3", leafnodes)
-    if block.startswith("#### "):
-        parentnode = ParentNode("h4", leafnodes)
-    if block.startswith("##### "):
-        parentnode = ParentNode("h5", leafnodes)
-    if block.startswith("###### "):
-        parentnode = ParentNode("h6", leafnodes)
+        parentnode = ParentNode("h1", children)
+    elif block.startswith("## "):
+        parentnode = ParentNode("h2", children)
+    elif block.startswith("### "):
+        parentnode = ParentNode("h3", children)
+    elif block.startswith("#### "):
+        parentnode = ParentNode("h4", children)
+    elif block.startswith("##### "):
+        parentnode = ParentNode("h5", children)
+    elif block.startswith("###### "):
+        parentnode = ParentNode("h6", children)
+    else:
+        raise ValueError("Invalid heading level")
     return parentnode
 
 
-def block_type_code_to_html(block):
-    leafnodes = [LeafNode(None, block.lstrip("```").rstrip("```"))]
-    parentnode = ParentNode("code", leafnodes)
+def block_type_code_to_html_node(block):
+    if not block.startswith("```") or not block.endswith("```"):
+        raise ValueError("Invalid code block")
+    children = text_to_children(block.lstrip("```").rstrip("```"))
+    parentnode = ParentNode("code", children)
     return parentnode
 
 
-def block_type_quote_to_html(block):
+def block_type_quote_to_html_node(block):
     lines = block.split("\n")
     stripped_lines = []
     for line in lines:
         stripped_lines.append(line.lstrip(">").lstrip())
     parentnode = ParentNode("blockquote",
-                            [LeafNode(None, "\n".join(stripped_lines))])
+                            text_to_children(" ".join(stripped_lines)))
     return parentnode
 
 
-def block_type_unordered_list_to_html(block):
+def block_type_unordered_list_to_html_node(block):
     lines = block.split("\n")
     leafnodes = []
     for line in lines:
-        leafnodes.append(LeafNode("li", line.lstrip("*").lstrip("-").lstrip()))
+        children = text_to_children(line.lstrip("*").lstrip("-").lstrip())
+        leafnodes.append(ParentNode("li", children))
     parentnode = ParentNode("ul", leafnodes)
     return parentnode
 
 
-def block_type_ordered_list_to_html(block):
+def block_type_ordered_list_to_html_node(block):
     lines = block.split("\n")
     leafnodes = []
     i = 1
     for line in lines:
-        leafnodes.append(LeafNode("li", line.lstrip(f"{i}.").lstrip()))
+        children = text_to_children(line.lstrip(f"{i}.").lstrip())
+        leafnodes.append(ParentNode("li", children))
         i += 1
     parentnode = ParentNode("ol", leafnodes)
     return parentnode
@@ -122,17 +144,19 @@ def markdown_to_html_node(markdown):
     for block in list_of_blocks:
         block_type = block_to_block_type(block)
         if block_type == block_type_paragraph:
-            list_of_nodes.append(block_type_paragraph_to_html(block))
-        if block_type == block_type_heading:
-            list_of_nodes.append(block_type_heading_to_html(block))
-        if block_type == block_type_code:
-            list_of_nodes.append(block_type_code_to_html(block))
-        if block_type == block_type_quote:
-            list_of_nodes.append(block_type_quote_to_html(block))
-        if block_type == block_type_unordered_list:
-            list_of_nodes.append(block_type_unordered_list_to_html(block))
-        if block_type == block_type_ordered_list:
-            list_of_nodes.append(block_type_ordered_list_to_html(block))
+            list_of_nodes.append(block_type_paragraph_to_html_node(block))
+        elif block_type == block_type_heading:
+            list_of_nodes.append(block_type_heading_to_html_node(block))
+        elif block_type == block_type_code:
+            list_of_nodes.append(block_type_code_to_html_node(block))
+        elif block_type == block_type_quote:
+            list_of_nodes.append(block_type_quote_to_html_node(block))
+        elif block_type == block_type_unordered_list:
+            list_of_nodes.append(block_type_unordered_list_to_html_node(block))
+        elif block_type == block_type_ordered_list:
+            list_of_nodes.append(block_type_ordered_list_to_html_node(block))
+        else:
+            raise ValueError("Invalid block type")
 
     parentnode = ParentNode("div", list_of_nodes)
     return parentnode
