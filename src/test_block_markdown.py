@@ -9,7 +9,8 @@ from block_markdown import (markdown_to_blocks,
                             block_type_paragraph,
                             block_type_heading,
                             block_type_paragraph_to_html,
-                            block_type_heading_to_html)
+                            block_type_heading_to_html,
+                            block_type_code_to_html)
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -76,6 +77,11 @@ This is the same paragraph on a new line
         block = "# heading"
         self.assertEqual("<h1>heading</h1>",
                          block_type_heading_to_html(block).to_html())
+
+    def test_block_type_code_to_html(self):
+        block = "```\ncode\n```"
+        self.assertEqual("<code>\ncode\n</code>",
+                         block_type_code_to_html(block).to_html())
 
 
 if __name__ == "__main__":

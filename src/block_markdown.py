@@ -78,3 +78,9 @@ def block_type_heading_to_html(block):
     if block.startswith("###### "):
         parentnode = ParentNode("h6", leafnodes)
     return parentnode
+
+
+def block_type_code_to_html(block):
+    leafnodes = [LeafNode(None, block.lstrip("```").rstrip("```"))]
+    parentnode = ParentNode("code", leafnodes)
+    return parentnode
