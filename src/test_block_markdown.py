@@ -12,7 +12,8 @@ from block_markdown import (markdown_to_blocks,
                             block_type_heading_to_html,
                             block_type_code_to_html,
                             block_type_quote_to_html,
-                            block_type_unordered_list_to_html)
+                            block_type_unordered_list_to_html,
+                            block_type_ordered_list_to_html)
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -97,6 +98,11 @@ This is the same paragraph on a new line
         block = "- list\n- items"
         self.assertEqual("<ul><li>list</li><li>items</li></ul>",
                          block_type_unordered_list_to_html(block).to_html())
+
+    def test_block_type_ordered_list_to_html(self):
+        block = "1. list\n2. items"
+        self.assertEqual("<ol><li>list</li><li>items</li></ol>",
+                         block_type_ordered_list_to_html(block).to_html())
 
 
 if __name__ == "__main__":

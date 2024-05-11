@@ -103,3 +103,14 @@ def block_type_unordered_list_to_html(block):
         leafnodes.append(LeafNode("li", line.lstrip("*").lstrip("-").lstrip()))
     parentnode = ParentNode("ul", leafnodes)
     return parentnode
+
+
+def block_type_ordered_list_to_html(block):
+    lines = block.split("\n")
+    leafnodes = []
+    i = 1
+    for line in lines:
+        leafnodes.append(LeafNode("li", line.lstrip(f"{i}.").lstrip()))
+        i += 1
+    parentnode = ParentNode("ol", leafnodes)
+    return parentnode
