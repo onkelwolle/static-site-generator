@@ -13,7 +13,8 @@ from block_markdown import (markdown_to_blocks,
                             block_type_code_to_html,
                             block_type_quote_to_html,
                             block_type_unordered_list_to_html,
-                            block_type_ordered_list_to_html)
+                            block_type_ordered_list_to_html,
+                            markdown_to_html_node)
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -103,6 +104,11 @@ This is the same paragraph on a new line
         block = "1. list\n2. items"
         self.assertEqual("<ol><li>list</li><li>items</li></ol>",
                          block_type_ordered_list_to_html(block).to_html())
+
+    def test_markdown_to_html_node(self):
+        markdown = """# heading\n\nThis is **bolded** paragraph\n\nThis is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line\n\n* This is a list\n* with items"""
+        self.assertEqual("<div><h1>heading</h1><p>This is **bolded** paragraph</p><p>This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line</p><ul><li>This is a list</li><li>with items</li></ul></div>",
+                         markdown_to_html_node(markdown).to_html())
 
 
 if __name__ == "__main__":

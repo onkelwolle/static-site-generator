@@ -114,3 +114,25 @@ def block_type_ordered_list_to_html(block):
         i += 1
     parentnode = ParentNode("ol", leafnodes)
     return parentnode
+
+
+def markdown_to_html_node(markdown):
+    list_of_blocks = markdown_to_blocks(markdown)
+    list_of_nodes = []
+    for block in list_of_blocks:
+        block_type = block_to_block_type(block)
+        if block_type == block_type_paragraph:
+            list_of_nodes.append(block_type_paragraph_to_html(block))
+        if block_type == block_type_heading:
+            list_of_nodes.append(block_type_heading_to_html(block))
+        if block_type == block_type_code:
+            list_of_nodes.append(block_type_code_to_html(block))
+        if block_type == block_type_quote:
+            list_of_nodes.append(block_type_quote_to_html(block))
+        if block_type == block_type_unordered_list:
+            list_of_nodes.append(block_type_unordered_list_to_html(block))
+        if block_type == block_type_ordered_list:
+            list_of_nodes.append(block_type_ordered_list_to_html(block))
+
+    parentnode = ParentNode("div", list_of_nodes)
+    return parentnode
